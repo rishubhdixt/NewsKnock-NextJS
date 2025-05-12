@@ -11,8 +11,6 @@ export async function POST(request: NextRequest) {
     const reqBody = await request.json();
     const { email, password } = reqBody;
 
-    console.log('Attempting to login with email:', email);  // Debugging log
-
     // Case-insensitive email search
     const user = await User.findOne({
       email: { $regex: new RegExp(`^${email}$`, 'i') },

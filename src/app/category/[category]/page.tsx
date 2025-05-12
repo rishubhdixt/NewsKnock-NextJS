@@ -5,21 +5,16 @@ import { fetchTopHeadlines } from '@/helpers/fetchNews';
 import NewsCard from '@/components/NewsCard';
 
 interface CategoryPageProps {
-  params: Promise<{ category: string }>;
+  params: { category: string };  // Resolving Promise type directly here
 }
 
 const CategoryPage = ({ params }: CategoryPageProps) => {
   const [category, setCategory] = useState<string | null>(null);
-  const [news, setNews] = useState<any[]>([]);
+  const [news, setNews] = useState<Array<{ title: string; description: string; urlToImage: string; url: string }>>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const getCategory = async () => {
-      const resolvedParams = await params;
-      setCategory(resolvedParams.category);
-    };
-
-    getCategory();
+    setCategory(params.category);
   }, [params]);
 
   useEffect(() => {
@@ -52,14 +47,14 @@ const CategoryPage = ({ params }: CategoryPageProps) => {
     <div className="p-6 space-y-4 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-700 text-white">
       <h1 className="text-3xl font-extrabold mb-6 text-center">{category} News</h1>
       <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-        {news.map((item: any, index: number) => (
+        {news.map((item, index) => (
           <NewsCard
             key={index}
             id={String(index)}
             title={item.title}
             description={item.description}
             imageUrl={item.urlToImage}
-            sourceUrl={item.url} // ✅ use the actual article URL
+            sourceUrl={item.url}
           />
         ))}
       </div>

@@ -1,26 +1,39 @@
-"use client"
+'use client';
+
 import { createContext, useContext, useState, useEffect } from 'react';
 
-const AuthContext = createContext<any>(null);
+interface User {
+  email: string;
+  username: string;
+}
+
+interface AuthContextType {
+  user: User | null;
+  setUser: React.Dispatch<React.SetStateAction<User | null>>;
+  isLoggedIn: boolean;
+  loading: boolean;
+  logout: () => void;
+}
+
+const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Fetch user from the API
   const fetchUser = async () => {
     try {
       const res = await fetch('/api/users/me', {
         method: 'POST',
-        credentials: 'include', // Send cookies
+        credentials: 'include',
       });
 
       const data = await res.json();
 
       if (res.ok && data.data) {
-        setUser(data.data);  // If user exists, update the context
+        setUser(data.data);
       } else {
-        setUser(null);  // User not logged in, clear context
+        setUser(null);
       }
     } catch (err) {
       console.error('Failed to fetch user:', err);
@@ -34,16 +47,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     fetchUser();
   }, []);
 
-  // Define the logout function
   const logout = async () => {
     try {
       const res = await fetch('/api/users/logout', {
         method: 'POST',
-        credentials: 'include', // Send cookies
+        credentials: 'include',
       });
       const data = await res.json();
       if (res.ok) {
-        setUser(null);  // Clear the user data from context
+        setUser(null);
         console.log('[Logout] 🎉 User logged out');
       } else {
         console.log('[Logout] ❌ Error:', data.error);
@@ -60,4 +72,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
