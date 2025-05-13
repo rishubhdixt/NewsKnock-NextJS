@@ -9,14 +9,15 @@ const compat = new FlatCompat({
   baseDirectory: __dirname,
 });
 
-// Convert classic ESLint config to flat config
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
 
-  // Add custom rule overrides here
   {
     rules: {
-      "@next/next/no-img-element": "off", // ✅ disable warning for <img>
+      "@next/next/no-img-element": "off", // allow using <img />
+      "react/no-unescaped-entities": "off", // allow apostrophes and quotes
+      "@typescript-eslint/no-explicit-any": "off", // allow use of 'any'
+      "react-hooks/exhaustive-deps": "warn", // show warning but not error on missing deps
     },
   },
 ];
