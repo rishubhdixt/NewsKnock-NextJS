@@ -1,10 +1,16 @@
-// app/[category]/page.tsx
-
 import { fetchTopHeadlines } from '@/helpers/fetchNews';
 import NewsCard from '@/components/NewsCard';
 import { NewsArticle } from '@/types/news';
+import { Metadata } from 'next';
+
 interface CategoryPageProps {
   params: { category: string };
+}
+
+export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
+  return {
+    title: `${params.category} News - News Knock`,
+  };
 }
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
@@ -13,7 +19,6 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
 
   return (
     <div className="relative min-h-screen bg-gradient-to-r from-gray-900 via-gray-800 to-gray-700 p-6 sm:p-10 overflow-hidden text-white">
-      {/* Decorative blurred circles */}
       <div className="absolute -top-20 -left-20 w-96 h-96 bg-pink-200 rounded-full filter blur-3xl opacity-30 z-0"></div>
       <div className="absolute top-1/3 right-0 w-80 h-80 bg-red-100 rounded-full filter blur-2xl opacity-30 z-0"></div>
 
@@ -29,7 +34,6 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
             {news.map((item, index) => (
               <NewsCard
                 key={index}
-              
                 title={item.title}
                 description={item.description ?? ''}
                 imageUrl={item.urlToImage ?? ''}
