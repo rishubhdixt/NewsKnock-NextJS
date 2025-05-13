@@ -1,3 +1,4 @@
+// components/NewsCard.tsx
 'use client';
 
 import React, { useState } from 'react';
@@ -5,8 +6,8 @@ import React, { useState } from 'react';
 interface NewsCardProps {
   id: string;
   title: string;
-  description?: string;
-  imageUrl?: string;
+  description: string;
+  imageUrl: string;
   sourceUrl: string;
 }
 
@@ -20,7 +21,7 @@ const NewsCard: React.FC<NewsCardProps> = ({
   const [imgError, setImgError] = useState(false);
 
   const handleClick = () => {
-    window.open(sourceUrl, '_blank'); // Opens the article in a new tab
+    window.open(sourceUrl, '_blank');
   };
 
   const showImage = imageUrl && !imgError;
@@ -49,9 +50,7 @@ const NewsCard: React.FC<NewsCardProps> = ({
       )}
       <div className="mt-4 space-y-2">
         <h2 className="text-lg font-semibold text-white">{title}</h2>
-        <p className="text-sm text-gray-400 mt-2">
-          {description || 'No description available.'}
-        </p>
+        <p className="text-sm text-gray-400 mt-2">{description}</p>
       </div>
     </div>
   );

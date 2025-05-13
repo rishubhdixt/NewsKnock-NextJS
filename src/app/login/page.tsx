@@ -13,7 +13,16 @@ interface UserCredentials {
   password: string;
 }
 
-const LoginPage = () => {
+interface LoginResponse {
+  Success?: boolean;
+  data?: {
+    email: string;
+    username: string;
+  };
+  error?: string;
+}
+
+const LoginPage: React.FC = () => {
   const router = useRouter();
   const { setUser } = useAuth();
 
@@ -35,8 +44,9 @@ const LoginPage = () => {
         credentials: 'include',
       });
 
-      const data = await res.json();
-      if (res.ok && data.Success) {
+      const data: LoginResponse = await res.json();
+
+      if (res.ok && data.Success && data.data) {
         console.log('[Login] 🎉', data);
         setUser({ username: data.data.username, email: data.data.email });
         router.push('/profile');
@@ -44,8 +54,12 @@ const LoginPage = () => {
         console.error('[Login] ❌', data.error);
         alert(data.error || 'Login failed.');
       }
-    } catch (err) {
-      console.error('[Login] ❌ Unexpected Error', err);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error('[Login] ❌ Unexpected Error:', err.message);
+      } else {
+        console.error('[Login] ❌ Unexpected Error:', err);
+      }
       alert('Something went wrong.');
     } finally {
       setLoading(false);
@@ -86,11 +100,11 @@ const LoginPage = () => {
           </div>
 
           <Button onClick={onLogin} disabled={buttonDisabled} className="w-full">
-            Login
+            {loading ? 'Please wait...' : 'Login'}
           </Button>
 
           <div className="text-center text-sm">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Link href="/signup" className="underline text-primary">
               Sign up
             </Link>

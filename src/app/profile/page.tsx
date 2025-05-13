@@ -1,8 +1,10 @@
+// app/profile/page.tsx
 import { fetchTopHeadlines } from '@/helpers/fetchNews';
 import NewsCard from '@/components/NewsCard';
+import { NewsArticle } from '@/types/news';
 
 export default async function ProfilePage() {
-  const news = await fetchTopHeadlines();
+  const news: NewsArticle[] = await fetchTopHeadlines();
 
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 p-6 sm:p-10 overflow-hidden text-white">
@@ -16,13 +18,13 @@ export default async function ProfilePage() {
         </h1>
 
         <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-          {news.map((item: any, index: number) => (
+          {news.map((item, index) => (
             <NewsCard
               key={index}
               id={String(index)}
               title={item.title}
-              description={item.description}
-              imageUrl={item.urlToImage}
+              description={item.description ?? ''}
+              imageUrl={item.urlToImage ?? ''}
               sourceUrl={item.url}
             />
           ))}
@@ -30,4 +32,4 @@ export default async function ProfilePage() {
       </div>
     </div>
   );
-}           
+}

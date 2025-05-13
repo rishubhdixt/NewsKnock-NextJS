@@ -12,11 +12,25 @@ const ReelsPage = () => {
   const [hasMore, setHasMore] = useState(true);
   const isFetchingRef = useRef(false);
 
-  // Load initial reels
+  const fetchMoreReels = async () => {
+    if (isFetchingRef.current || !hasMore) return;
+    isFetchingRef.current = true;
+
+    const newReels = await fetchPaginatedNews('', page + 1, 5);
+    if (newReels.length > 0) {
+      setReels(prev => [...prev, ...newReels]);
+      setPage(prev => prev + 1);
+    } else {
+      setHasMore(false);
+    }
+
+    isFetchingRef.current = false;
+  };
+
   useEffect(() => {
     const loadInitialReels = async () => {
       const data = await fetchPaginatedNews('', 1, 5);
-      if (data.length > 0) {
+      if (data.length) {
         setReels(data);
       } else {
         setHasMore(false);
@@ -25,52 +39,36 @@ const ReelsPage = () => {
     loadInitialReels();
   }, []);
 
-  // Disable page scroll when reels are visible (if needed)
   useEffect(() => {
-    if (window.innerWidth < 768) {
-      document.body.style.overflow = 'hidden';
+    const preventScroll = () => {
+      if (window.innerWidth < 768) document.body.style.overflow = 'hidden';
       return () => {
-        document.body.style.overflow = 'auto';
+        document.body.style.overflow = '';
       };
-    }
+    };
+    return preventScroll();
   }, []);
-  
 
-  // Handle keyboard navigation (ArrowUp/Down)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'ArrowDown') nextReel();
       else if (e.key === 'ArrowUp') prevReel();
     };
-
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [reels, page, hasMore]);
+  }, [currentIndex, reels]);
 
-  const nextReel = () => {
-    setCurrentIndex((prev) => {
-      const nextIndex = Math.min(prev + 1, reels.length - 1);
-
-      if (nextIndex >= reels.length - 2 && !isFetchingRef.current && hasMore) {
-        isFetchingRef.current = true;
-
-        fetchPaginatedNews('', page + 1, 5).then((newReels) => {
-          if (newReels.length > 0) {
-            setReels((prev) => [...prev, ...newReels]);
-            setPage((prev) => prev + 1);
-          } else {
-            setHasMore(false);
-          }
-          isFetchingRef.current = false;
-        });
-      }
-
-      return nextIndex;
-    });
+  const nextReel = async () => {
+    if (currentIndex < reels.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+    } else if (hasMore) {
+      await fetchMoreReels();
+      setCurrentIndex(currentIndex + 1);
+    }
   };
 
   const prevReel = () => {
-    setCurrentIndex((prev) => Math.max(prev - 1, 0));
+    setCurrentIndex(prev => Math.max(prev - 1, 0));
   };
 
   const currentReel = reels[currentIndex];
@@ -91,7 +89,7 @@ const ReelsPage = () => {
           </div>
         )}
 
-        {/* Arrow Buttons */}
+        {/* Arrows */}
         <div className="absolute right-3 top-1/2 -translate-y-1/2 z-30 flex flex-col gap-3">
           <button
             onClick={prevReel}
@@ -107,7 +105,7 @@ const ReelsPage = () => {
           </button>
         </div>
 
-        {/* Progress indicators */}
+        {/* Progress */}
         <div className="absolute bottom-3 w-full flex justify-center gap-1 z-30">
           {reels.map((_, idx) => (
             <div

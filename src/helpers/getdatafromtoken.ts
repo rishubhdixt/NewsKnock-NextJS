@@ -11,7 +11,7 @@ export const getDataFromToken=(request:NextRequest)=>{
 
 
 
-    } catch (error:any) {
+    } catch (error:unknown) {
         
     }
 }
