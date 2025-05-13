@@ -56,16 +56,6 @@ const ReelsPage = () => {
     return preventScroll();
   }, []);
 
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowDown') nextReel();
-      else if (e.key === 'ArrowUp') prevReel();
-    };
-  
-    window.addEventListener('keydown', handleKeyDown);
-  
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);  // Empty array means this effect runs only once when the component mounts
   
 
   const nextReel = async () => {
@@ -80,7 +70,16 @@ const ReelsPage = () => {
   const prevReel = () => {
     setCurrentIndex(prev => Math.max(prev - 1, 0));
   };
-
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowDown') nextReel();
+      else if (e.key === 'ArrowUp') prevReel();
+    };
+  
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [nextReel, prevReel]); // ✅ Safe if nextReel/prevReel are stable (e.g., useCallback)
+  
   const currentReel = reels[currentIndex];
 
   return (

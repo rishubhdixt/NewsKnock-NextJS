@@ -3,7 +3,6 @@
 import { fetchTopHeadlines } from '@/helpers/fetchNews';
 import NewsCard from '@/components/NewsCard';
 import { NewsArticle } from '@/types/news';
-
 interface CategoryPageProps {
   params: { category: string };
 }
