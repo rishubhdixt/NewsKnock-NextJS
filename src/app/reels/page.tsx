@@ -6,7 +6,14 @@ import { fetchPaginatedNews } from '@/helpers/fetchPaginatedNews';
 import { ArrowDown, ArrowUp } from 'lucide-react';
 
 const ReelsPage = () => {
-  const [reels, setReels] = useState<any[]>([]);
+  interface Reel {
+    id: string;
+    title: string;
+    description?: string;
+    urlToImage?: string;
+  }
+  const [reels, setReels] = useState<Reel[]>([]);
+  
   const [currentIndex, setCurrentIndex] = useState(0);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -54,9 +61,12 @@ const ReelsPage = () => {
       if (e.key === 'ArrowDown') nextReel();
       else if (e.key === 'ArrowUp') prevReel();
     };
+  
     window.addEventListener('keydown', handleKeyDown);
+  
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [currentIndex, reels]);
+  }, []);  // Empty array means this effect runs only once when the component mounts
+  
 
   const nextReel = async () => {
     if (currentIndex < reels.length - 1) {

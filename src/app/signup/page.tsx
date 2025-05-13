@@ -1,4 +1,5 @@
 "use client";
+import { AxiosError } from 'axios';
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -29,11 +30,20 @@ export default function SignupPage() {
   const onSignup = async () => {
     try {
       setLoading(true);
-      const response = await axios.post("/api/users/signup", user);
+      // Sending signup request to the backend
+      await axios.post("/api/users/signup", user);
       toast.success("Signup successful!");
       router.push("/login");
-    } catch (error: any) {
-      toast.error(error?.response?.data?.error || error.message || "Signup failed");
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        // Narrowing the error type to AxiosError and handling the error
+        toast.error(error.response?.data?.error || error.message || "Signup failed");
+      } else if (error instanceof Error) {
+        // Handling general error
+        toast.error(error.message || "Signup failed");
+      } else {
+        toast.error("Signup failed");
+      }
     } finally {
       setLoading(false);
     }
