@@ -2,11 +2,7 @@ import { fetchTopHeadlines } from '@/helpers/fetchNews';
 import NewsCard from '@/components/NewsCard';
 import { NewsArticle } from '@/types/news';
 
-type Props = {
-  params: { category: string };
-};
-
-export default async function CategoryPage({ params }: Props) {
+export default async function CategoryPage({ params }: { params: { category: string } }) {
   const category = params.category;
   const news: NewsArticle[] = await fetchTopHeadlines(category);
 
