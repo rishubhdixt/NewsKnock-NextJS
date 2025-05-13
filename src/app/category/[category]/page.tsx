@@ -4,6 +4,8 @@ import { NewsArticle } from '@/types/news';
 
 export default async function CategoryPage({ params }: { params: { category: string } }) {
   const category = params.category;
+  
+  // Fetching data asynchronously for the specific category
   const news: NewsArticle[] = await fetchTopHeadlines(category);
 
   return (
