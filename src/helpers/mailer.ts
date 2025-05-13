@@ -1,6 +1,7 @@
 import User from '@/models/usermodel';
 import bcryptjs from 'bcryptjs';
 import nodemailer from 'nodemailer';
+import { NextResponse } from 'next/server';
 
 export const sendEmail = async ({ email, emailType, userID }: any) => {
   try {
@@ -67,7 +68,11 @@ export const sendEmail = async ({ email, emailType, userID }: any) => {
 
     const mailResponse = await transporter.sendMail(mailOptions);
     return mailResponse;
-  } catch (error: any) {
-    throw new Error(error.message || 'Failed to send email');
-  }
+  } catch (error: unknown)  {
+      if (error instanceof Error) {
+        return NextResponse.json({ error: error.message }, { status: 500 });
+      }
+    
+      return NextResponse.json({ error: "Unknown error occurred" }, { status: 500 });
+    }
 };

@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
+
 interface ReelCardProps {
   id: string;
   title: string;
@@ -35,12 +36,14 @@ const ReelCard: React.FC<ReelCardProps> = ({
     >
       {/* Background Image (only render if valid and not failed) */}
       {showImage && (
-        <img
-          src={imageUrl}
-          alt={title}
-          className="absolute top-0 left-0 w-full h-full object-cover z-0"
-          onError={() => setImgError(true)}
-        />
+       <img
+       src={imageUrl}
+       alt={title}
+       className="absolute top-0 left-0 w-full h-full object-cover z-0"
+       onError={() => setImgError(true)}
+       loading="lazy"
+     />
+     
       )}
 
       {/* Gradient Overlay */}

@@ -1,10 +1,9 @@
-// components/NewsCard.tsx
 'use client';
 
 import React, { useState } from 'react';
 
+
 interface NewsCardProps {
-  id: string;
   title: string;
   description: string;
   imageUrl: string;
@@ -12,7 +11,6 @@ interface NewsCardProps {
 }
 
 const NewsCard: React.FC<NewsCardProps> = ({
-  id,
   title,
   description,
   imageUrl,
@@ -36,12 +34,13 @@ const NewsCard: React.FC<NewsCardProps> = ({
       {showImage ? (
         <div className="relative w-full h-56 rounded-lg overflow-hidden">
           <img
-            src={imageUrl}
-            alt={title}
-            className="object-cover w-full h-full transition-transform duration-300 ease-in-out hover:scale-110"
-            onError={() => setImgError(true)}
-            loading="lazy"
-          />
+  src={imageUrl}
+  alt={title}
+  className="w-full h-full object-cover transition-transform duration-300 ease-in-out hover:scale-110"
+  onError={() => setImgError(true)}
+  loading="lazy"
+/>
+
         </div>
       ) : (
         <div className="flex items-center justify-center w-full h-56 bg-gray-600 text-gray-200 font-semibold">

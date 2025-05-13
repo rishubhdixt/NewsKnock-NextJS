@@ -21,7 +21,7 @@ export default async function ProfilePage() {
           {news.map((item, index) => (
             <NewsCard
               key={index}
-              id={String(index)}
+              
               title={item.title}
               description={item.description ?? ''}
               imageUrl={item.urlToImage ?? ''}
